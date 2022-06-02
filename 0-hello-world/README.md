@@ -19,7 +19,7 @@ The hello API endpoints, request and response is described here.
 
 Download link: https://www.postman.com/downloads/
 
-### Request
+## Request
 
 `Method: GET`
 
@@ -28,7 +28,7 @@ Download link: https://www.postman.com/downloads/
 
 
 
-### Response
+## Response
 
     Hello, From Shreyas!
 
