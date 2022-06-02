@@ -1,7 +1,7 @@
 
-# REST API example for get request
+# REST API example for GET request
 
-This is a hello api example. The api is developed in flask.
+This is a hello api example developed in flask.
 
 
 ## Install
@@ -13,7 +13,7 @@ This is a hello api example. The api is developed in flask.
 
 # REST API
 
-The REST API to the example app is described below.
+The hello API endpoints, request and response is described here.
 
 ## Tool used: Postman
 
