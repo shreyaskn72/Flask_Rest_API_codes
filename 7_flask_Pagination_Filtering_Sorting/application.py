@@ -58,7 +58,7 @@ def movies():
 
 
     # Apply the pagination
-    movies = movies.paginate(page, per_page, error_out=False)
+    movies = movies.paginate(page=page, per_page=per_page, error_out=False)
 
     # Convert the movies to a list of dictionaries
     movies = [movie.to_dict() for movie in movies.items]
