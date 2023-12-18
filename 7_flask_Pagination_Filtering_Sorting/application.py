@@ -27,20 +27,7 @@ class Movie(db.Model):
      "rating": self.rating
     }
 
-# Create some sample data
-db.drop_all()
-db.create_all()
-db.session.add(Movie(title="The Godfather", year=1972, rating=9.2))
-db.session.add(Movie(title="The Shawshank Redemption", year=1994, rating=9.3))
-db.session.add(Movie(title="The Dark Knight", year=2008, rating=9.0))
-db.session.add(Movie(title="The Matrix", year=1999, rating=8.7))
-db.session.add(Movie(title="Inception", year=2010, rating=8.8))
-db.session.add(Movie(title="The Lord of the Rings: The Return of the King", year=2003, rating=8.9))
-db.session.add(Movie(title="The Lion King", year=1994, rating=8.5))
-db.session.add(Movie(title="The Avengers", year=2012, rating=8.0))
-db.session.add(Movie(title="Titanic", year=1997, rating=7.8))
-db.session.add(Movie(title="Avatar", year=2009, rating=7.8))
-db.session.commit()
+
 
 # Define a route for the movies endpoint
 @app.route("/movies")
@@ -90,7 +77,22 @@ def movies():
 
 # Run the app
 if __name__ == "__main__":
-  app.run(debug=True)
+    with app.app_context():
+        # Create some sample data
+        db.drop_all()
+        db.create_all()
+        db.session.add(Movie(title="The Godfather", year=1972, rating=9.2))
+        db.session.add(Movie(title="The Shawshank Redemption", year=1994, rating=9.3))
+        db.session.add(Movie(title="The Dark Knight", year=2008, rating=9.0))
+        db.session.add(Movie(title="The Matrix", year=1999, rating=8.7))
+        db.session.add(Movie(title="Inception", year=2010, rating=8.8))
+        db.session.add(Movie(title="The Lord of the Rings: The Return of the King", year=2003, rating=8.9))
+        db.session.add(Movie(title="The Lion King", year=1994, rating=8.5))
+        db.session.add(Movie(title="The Avengers", year=2012, rating=8.0))
+        db.session.add(Movie(title="Titanic", year=1997, rating=7.8))
+        db.session.add(Movie(title="Avatar", year=2009, rating=7.8))
+        db.session.commit()
+    app.run(debug=True)
 
 """
 This program creates a SQLite database with a table named Movie, and inserts some sample data into it. Then, it defines a route for the /movies endpoint, which accepts query parameters for page, per_page, filter, sort, and order. It uses the SQLAlchemy methods to query, filter, sort, and paginate the movies from the database, and returns them as a JSON response.
