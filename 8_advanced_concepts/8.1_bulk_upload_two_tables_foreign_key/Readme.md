@@ -17,6 +17,17 @@ This Flask API allows for bulk uploading of data into two tables using SQLAlchem
 - In case of an error during the upload process, the API will roll back the transaction and return an error response.
 - If successful, it will commit the changes and return a success message.
 
+### Example JSON Payload
+
+```json
+{
+  "parents": [
+    {"name": "Parent 1"},
+    {"name": "Parent 2"}
+  ]
+}
+```
+
 ### Example CURL Command
 
 ```bash
@@ -32,14 +43,6 @@ curl --location 'http://localhost:5000/upload' \
 }'
 ```
 
-### Example JSON Payload
 
-```json
-{
-  "parents": [
-    {"name": "Parent 1"},
-    {"name": "Parent 2"}
-  ]
-}
 
 
