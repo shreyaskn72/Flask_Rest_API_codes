@@ -1,0 +1,180 @@
+{
+	"info": {
+		"_postman_id": "ad45bed3-3669-44cc-973a-764893679fe6",
+		"name": "8.2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12638459"
+	},
+	"item": [
+		{
+			"name": "http://127.0.0.1:5000/hello",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Name\": \"Jolly\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/hello",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"hello"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "http://127.0.0.1:5000/hello",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"Shreyas\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/hello",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"hello"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "35"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.3 Python/3.11.1"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 26 Feb 2024 13:42:27 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"greeting\": \"Hello! Shreyas\"\n}"
+				}
+			]
+		},
+		{
+			"name": "http://127.0.0.1:5000/internal_call",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Name\": \"Jolly\",\r\n    \"City\": \"Bengaluru\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/internal_call",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"internal_call"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "http://127.0.0.1:5000/internal_call",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"Shreyas\",\r\n    \"City\": \"Bengaluru\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/internal_call",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"internal_call"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "98"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.3 Python/3.11.1"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 26 Feb 2024 13:42:43 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"greeting\": \"Hello! Shreyas\",\n    \"second_response\": \"hopefully you will enjoy in Bengaluru\"\n}"
+				}
+			]
+		}
+	]
+}
