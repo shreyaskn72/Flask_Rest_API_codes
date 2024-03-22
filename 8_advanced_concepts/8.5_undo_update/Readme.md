@@ -14,7 +14,7 @@ This Flask API provides endpoints to create an entry in an SQLite database, upda
      python app.py
     ```
     
-## API Endpoints
+## API Endpoints Curl Examples
 
 1. Create Entry:
 
