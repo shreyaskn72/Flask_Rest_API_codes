@@ -20,9 +20,10 @@ curl -X GET -H "Authorization: Bearer <access_token>" http://localhost:5000/hell
 ```
 3. If the access token expires, use the refresh token to obtain a new access token:
 
-
 ```
-curl -X POST -H "Content-Type: application/json" -d '{"refresh_token":"<refresh_token>"}' http://localhost:5000/refresh
+curl --location --request POST 'http://localhost:5000/refresh' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxMjA1NzQ5NSwianRpIjoiOTFlMDk3Y2EtNTA5ZS00YmIzLWJjOGYtZWE1OWYzYzA1ZTRjIiwibmJmIjoxNzEyMDU3NDk1LCJ0eXBlIjoicmVmcmVzaCIsInN1YiI6InVzZXIxIiwiZXhwIjoxNzE0NjQ5NDk1fQ.Xgl7Xej6YZ3JiqQJba1nRfTlpGjZvjppTnBLZ0JsdLU'
 ```
 
 ## Endpoints
