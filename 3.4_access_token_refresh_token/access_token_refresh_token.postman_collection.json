@@ -1,0 +1,251 @@
+{
+	"info": {
+		"_postman_id": "d036acbb-2cc2-48fc-a276-5e3ae0d9d43d",
+		"name": "access_token_refresh_token",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12638459"
+	},
+	"item": [
+		{
+			"name": "http://localhost:5000/auth",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\":\"user1\",\"password\":\"password1\"}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/auth",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "http://localhost:5000/auth",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\":\"user1\",\"password\":\"password1\"}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/auth",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "708"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.3 Python/3.11.1"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 02 Apr 2024 11:31:35 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"access_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxMjA1NzQ5NSwianRpIjoiNmI2ODAwMjMtODA4Yy00YjhjLWI1OWMtY2UzOGYzYmI4MDYxIiwibmJmIjoxNzEyMDU3NDk1LCJ0eXBlIjoiYWNjZXNzIiwic3ViIjoidXNlcjEiLCJleHAiOjE3MTIwNTgzOTV9.-7Y3bewcngy8nmTLCgY2ee9m-UVua3J-7rIsU5RVWGw\",\n    \"access_token_expiry\": \"Tue, 02 Apr 2024 11:46:35 GMT\",\n    \"refresh_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxMjA1NzQ5NSwianRpIjoiOTFlMDk3Y2EtNTA5ZS00YmIzLWJjOGYtZWE1OWYzYzA1ZTRjIiwibmJmIjoxNzEyMDU3NDk1LCJ0eXBlIjoicmVmcmVzaCIsInN1YiI6InVzZXIxIiwiZXhwIjoxNzE0NjQ5NDk1fQ.Xgl7Xej6YZ3JiqQJba1nRfTlpGjZvjppTnBLZ0JsdLU\",\n    \"refresh_token_expiry\": \"Thu, 02 May 2024 11:31:35 GMT\"\n}"
+				}
+			]
+		},
+		{
+			"name": "http://localhost:5000/hello",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxMjA1NzQ5NSwianRpIjoiNmI2ODAwMjMtODA4Yy00YjhjLWI1OWMtY2UzOGYzYmI4MDYxIiwibmJmIjoxNzEyMDU3NDk1LCJ0eXBlIjoiYWNjZXNzIiwic3ViIjoidXNlcjEiLCJleHAiOjE3MTIwNTgzOTV9.-7Y3bewcngy8nmTLCgY2ee9m-UVua3J-7rIsU5RVWGw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer <access_token>"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/hello",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"hello"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "http://localhost:5000/hello",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <access_token>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/hello",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"hello"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "61"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.3 Python/3.11.1"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 02 Apr 2024 11:32:19 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"logged_in_as\": \"user1\",\n    \"message\": \"Hello, World!\"\n}"
+				}
+			]
+		},
+		{
+			"name": "http://localhost:5000/refresh",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxMjA1NzQ5NSwianRpIjoiOTFlMDk3Y2EtNTA5ZS00YmIzLWJjOGYtZWE1OWYzYzA1ZTRjIiwibmJmIjoxNzEyMDU3NDk1LCJ0eXBlIjoicmVmcmVzaCIsInN1YiI6InVzZXIxIiwiZXhwIjoxNzE0NjQ5NDk1fQ.Xgl7Xej6YZ3JiqQJba1nRfTlpGjZvjppTnBLZ0JsdLU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/refresh",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"refresh"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "http://localhost:5000/refresh",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/refresh",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"refresh"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "353"
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/2.0.3 Python/3.11.1"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 02 Apr 2024 11:33:27 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"access_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxMjA1NzYwNywianRpIjoiODIwYzY0N2ItZGMwYS00MjhhLWI2MDItZjM5MDE1ZGUxNmMyIiwibmJmIjoxNzEyMDU3NjA3LCJ0eXBlIjoiYWNjZXNzIiwic3ViIjoidXNlcjEiLCJleHAiOjE3MTIwNTg1MDd9.4n8ZSuj9-UQ1yQ1p7Ml0So8pOn0C9eiTTENbqGE0rU4\",\n    \"access_token_expiry\": \"Tue, 02 Apr 2024 11:48:27 GMT\"\n}"
+				}
+			]
+		}
+	]
+}
