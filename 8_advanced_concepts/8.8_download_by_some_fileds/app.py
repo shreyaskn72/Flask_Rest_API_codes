@@ -74,5 +74,29 @@ def download_tables_by_age(age):
     return send_file('tables_data_by_age.csv', as_attachment=True)
 
 
+@app.route('/download_tables_by_age_automated/<int:age>')
+def download_tables_by_age_automated(age):
+    your_table_rows = YourTable.query.filter_by(age=age).all()
+    if not your_table_rows:
+        return jsonify({'error': 'No data found for the given age'}), 404
+
+    with open('tables_data_by_age.csv', 'w') as f:
+        # Write header
+        f.write(','.join([c.name for c in YourTable.__table__.columns]))
+        f.write(',')
+        f.write(','.join([c.name for c in OtherTable.__table__.columns]))
+        f.write('\n')
+
+        # Write data
+        for your_table_row in your_table_rows:
+            your_table_data = ','.join(str(getattr(your_table_row, c.name)) for c in YourTable.__table__.columns)
+            other_table_rows = OtherTable.query.filter_by(your_table_id=your_table_row.id).all()
+            for other_table_row in other_table_rows:
+                other_table_data = ','.join(str(getattr(other_table_row, c.name)) for c in OtherTable.__table__.columns)
+                f.write(f"{your_table_data},{other_table_data}\n")
+
+    return send_file('tables_data_by_age.csv', as_attachment=True)
+
+
 if __name__ == '__main__':
     app.run(debug=True)
