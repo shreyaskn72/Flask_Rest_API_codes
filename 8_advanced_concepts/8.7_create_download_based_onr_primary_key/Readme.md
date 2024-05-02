@@ -21,11 +21,11 @@ curl -X GET http://127.0.0.1:5000/create_other_extra_row/1
 ```
 
 ### 3. Download Table
-- **URL:** `/download_table/<primary_key>`
+- **URL:** `/download_tables/<primary_key>`
 - **Method:** GET
 - **Description:** Downloads the entire table as a CSV file based on the primary key.
 
 - **Example:**
 ```bash
-curl -OJ http://127.0.0.1:5000/download_table/1
+curl -OJ http://127.0.0.1:5000/download_tables/1
 ```
