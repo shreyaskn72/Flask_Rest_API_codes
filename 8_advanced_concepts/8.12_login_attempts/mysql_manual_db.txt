@@ -1,0 +1,16 @@
+-- Create User table
+CREATE TABLE User (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(128) NOT NULL,
+    locked BOOLEAN DEFAULT FALSE
+);
+
+-- Create LoginAttempt table
+CREATE TABLE LoginAttempt (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    attempts INT DEFAULT 0,
+    lockout_time DATETIME,
+    FOREIGN KEY (user_id) REFERENCES User(id)
+);
