@@ -58,7 +58,7 @@ def login():
 @app.route('/user_logs', methods=['GET'])
 def get_user_logs():
     logs = UserLog.query.all()
-    logs_list = [{'id': log.id, 'ip_address': log.ip_address, 'timestamp': log.timestamp, 'user_id': log.user_id} for log in logs]
+    logs_list = [{'id': log.id, 'ip_address': log.ip_address, 'timestamp': log.timestamp, 'user_id': log.user_id, "email":User.query.get(log.user_id).email} for log in logs]
     return jsonify(logs_list), 200
 
 
@@ -69,7 +69,7 @@ def get_user_logs():
 def get_user_id_logs(user_id):
     user = User.query.get_or_404(user_id)
     user_logs = UserLog.query.filter_by(user_id=user_id).all()
-    logs_list = [{'id': log.id, 'timestamp': log.timestamp, 'ip_address': log.ip_address} for log in user_logs]
+    logs_list = [{'id': log.id, 'timestamp': log.timestamp, 'ip_address': log.ip_address, "email": user.email} for log in user_logs]
     return jsonify({'user_id': user_id, 'logs': logs_list}), 200
 
 if __name__ == '__main__':
