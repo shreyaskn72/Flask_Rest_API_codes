@@ -95,7 +95,7 @@ class CustomException(Exception):
 @app.errorhandler(CustomException)
 def handle_custom_exception(e):
     logging.exception('A CustomException occurred: %s', e.message)
-    return jsonify({'error': 'CustomError', 'message': e.message}), e.status_code
+    return jsonify({'error': 'CustomError', 'message': e.message, 'success': False}), e.status_code
 
 
 
@@ -106,6 +106,10 @@ def add_item():
         data = request.json
         name = data['name']
         quantity = data['quantity']
+
+        # Error handling for missing fields using CustomException
+        if not name or not quantity:
+            raise CustomException('Missing required fields', 400)
 
         # Insert item into database
         session = Session()
