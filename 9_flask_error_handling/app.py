@@ -99,5 +99,9 @@ def add_item():
     except (IndexError, KeyError, ValueError, TypeError, SQLAlchemyError, UnicodeError, AttributeError) as e:
         return jsonify({'error': 'Exception occurred', 'message': str(e)}), 400
 
+@app.route('/api/hello', methods=['GET'])
+def hello():
+    print("hello")
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
