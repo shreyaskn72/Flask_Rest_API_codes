@@ -79,6 +79,26 @@ def handle_generic_error(e):
     logging.exception('%s occurred: %s', error_name, str(e))
     return jsonify({'error': error_name, 'message': str(e)}), status_code
 
+"""
+Custom Exception Handling:
+
+You can also handle custom exceptions by defining your own exception classes and using @app.errorhandler to catch them.
+"""
+
+# Define CustomException class
+class CustomException(Exception):
+    def __init__(self, message, status_code):
+        self.message = message
+        self.status_code = status_code
+
+# Custom error handler for specific exceptions
+@app.errorhandler(CustomException)
+def handle_custom_exception(e):
+    logging.exception('A CustomException occurred: %s', e.message)
+    return jsonify({'error': 'CustomError', 'message': e.message}), e.status_code
+
+
+
 # API endpoint to add an item via POST request
 @app.route('/api/add_item', methods=['POST'])
 def add_item():
