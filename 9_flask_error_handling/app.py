@@ -51,7 +51,7 @@ def handle_type_error(e):
 @app.errorhandler(SQLAlchemyError)
 def handle_sqlalchemy_error(e):
     logging.exception('A SQLAlchemyError occurred: %s', e)
-    return jsonify({'error': 'SQLAlchemyError', 'message': str(e)}), 500
+    return jsonify({'error': 'SQLAlchemyError', 'message': str(e), 'args': str(e.args)}), 500
 
 @app.errorhandler(UnicodeError)
 def handle_unicode_error(e):
@@ -67,7 +67,7 @@ def handle_attribute_error(e):
 def handle_generic_error(e):
     if isinstance(e, SQLAlchemyError):
         logging.exception('A SQLAlchemyError occurred: %s', e)
-        return jsonify({'error': 'SQLAlchemyError', 'message': str(e)}), 500
+        return jsonify({'error': 'SQLAlchemyError', 'message': str(e), 'args': str(e.args)}), 500
 
     elif isinstance(e, HTTPException):
         status_code = e.code
@@ -85,7 +85,7 @@ Custom Exception Handling:
 You can also handle custom exceptions by defining your own exception classes and using @app.errorhandler to catch them.
 """
 
-# Define CustomException class
+#Define CustomException class
 class CustomException(Exception):
     def __init__(self, message, status_code):
         self.message = message
@@ -102,26 +102,26 @@ def handle_custom_exception(e):
 # API endpoint to add an item via POST request
 @app.route('/api/add_item', methods=['POST'])
 def add_item():
-    try:
-        data = request.json
-        name = data['name']
-        quantity = data['quantity']
+    data = request.json
+    name = data['name']
+    quantity = data['quantity']
 
-        # Error handling for missing fields using CustomException
-        if not name or not quantity:
-            raise CustomException('Missing required fields', 400)
+    # Error handling for missing fields using CustomException
+    if not name or not quantity:
+        raise CustomException('Missing required fields', 400)
 
-        # Insert item into database
-        session = Session()
-        item = Item(name=name, quantity=quantity)
-        session.add(item)
-        session.commit()
-        session.close()
+    # Insert item into database
+    session = Session()
+    item = Item(name=name, quantity=quantity)
+    session.add(item)
+    session.commit()
+    session.close()
 
-        return jsonify({'message': 'Item added successfully'}), 201
+    return jsonify({'message': 'Item added successfully'}), 201
 
-    except (IndexError, KeyError, ValueError, TypeError, SQLAlchemyError, UnicodeError, AttributeError) as e:
-        return jsonify({'error': 'Exception occurred', 'message': str(e)}), 400
+
+
+
 
 @app.route('/api/hello', methods=['GET'])
 def hello():
