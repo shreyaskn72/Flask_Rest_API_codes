@@ -5,6 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.exceptions import HTTPException
+from werkzeug.exceptions import RequestTimeout
 
 # Initialize Flask application
 app = Flask(__name__)
@@ -63,6 +64,47 @@ def handle_attribute_error(e):
     logging.exception('An AttributeError occurred: %s', e)
     return jsonify({'error': 'AttributeError', 'message': str(e)}), 400
 
+
+
+
+#Triggered when an assert statement fails.
+@app.errorhandler(AssertionError)
+def handle_assertion_error(e):
+    logging.exception('An AssertionError occurred: %s', str(e))
+    return jsonify({'error': 'AssertionError', 'message': str(e)}), 500
+
+
+""""
+FileNotFoundError
+Raised when a file or directory is requested but cannot be found.
+"""
+@app.errorhandler(FileNotFoundError)
+def handle_file_not_found_error(e):
+    logging.exception('A FileNotFoundError occurred: %s', str(e))
+    return jsonify({'error': 'FileNotFoundError', 'message': str(e)}), 404
+
+
+"""
+IOError
+Raised when an input/output operation (such as file operation) fails.
+"""
+@app.errorhandler(IOError)
+def handle_io_error(e):
+    logging.exception('An IOError occurred: %s', str(e))
+    return jsonify({'error': 'IOError', 'message': str(e)}), 500
+"""
+RequestTimeout
+Specific HTTP exception indicating a client request timed out.
+"""
+
+
+@app.errorhandler(RequestTimeout)
+def handle_request_timeout(e):
+    logging.exception('A RequestTimeout occurred: %s', str(e))
+    return jsonify({'error': 'RequestTimeout', 'message': 'The request timed out'}), 408
+
+
+#For all other unhandled error
 @app.errorhandler(Exception)
 def handle_generic_error(e):
     if isinstance(e, SQLAlchemyError):
