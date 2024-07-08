@@ -1,6 +1,4 @@
-Certainly! Below is an updated `README.md` script that explains the Flask API for user management with SQLAlchemy, including how to create users, update profiles, and manage full names with existing checks:
 
----
 
 # Flask API for User Management with SQLAlchemy
 

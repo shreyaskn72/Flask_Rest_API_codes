@@ -1,6 +1,4 @@
-Certainly! Below is a `README.md` script that explains the setup, usage, and structure of the Flask API for user management with the `user` and `profile` tables created manually in SQL:
 
----
 
 # Flask API for User Management with SQLAlchemy and Manually Created Tables
 
