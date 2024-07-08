@@ -26,12 +26,7 @@ This Flask application provides a simple API for user management, allowing CRUD 
    pip install -r requirements.txt
    ```
 
-3. Create the SQLite database (`example.db`) and manually create the `user` and `profile` tables using the provided SQL script or your preferred database management tool.
 
-   ```sql
-   -- SQL script to create user and profile tables
-   -- (Refer to previous message for SQL script)
-   ```
 
    Replace `<repository-url>` and `<repository-directory>` with your actual repository URL and directory.
 
