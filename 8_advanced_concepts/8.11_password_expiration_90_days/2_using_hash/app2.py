@@ -7,6 +7,8 @@ app = Flask(__name__)
 # Dummy database to store user data
 users = {}
 
+user_not_found_message = 'User not found'
+
 # Function to calculate the password expiration date
 def get_password_expiration_date():
     return datetime.now() + timedelta(days=90)
@@ -46,7 +48,7 @@ def change_password_simple():
 
     # Check if username exists
     if username not in users:
-        return jsonify({'error': 'User not found'}), 404
+        return jsonify({'error': user_not_found_message}), 404
 
     # Check if old password matches
     if not check_password_hash(users[username]['password_hash'], old_password):
@@ -74,7 +76,7 @@ def change_password():
 
     # Check if username exists
     if username not in users:
-        return jsonify({'error': 'User not found'}), 404
+        return jsonify({'error': user_not_found_message}), 404
 
     # Retrieve the old password hash from the stored user data
     old_password_hash = users[username]['password_hash']
@@ -103,7 +105,7 @@ def password_expired():
 
     # Check if username exists
     if username not in users:
-        return jsonify({'error': 'User not found'}), 404
+        return jsonify({'error': user_not_found_message}), 404
 
     # Check if password has expired
     password_expires_at = users[username]['password_expires_at']

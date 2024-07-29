@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///example.db'
 db = SQLAlchemy(app)
+csv_file_name = 'tables_data_by_age.csv'
 
 
 class YourTable(db.Model):
@@ -63,7 +64,7 @@ def download_tables_by_age(age):
     if not your_table_rows:
         return jsonify({'error': 'No data found for the given age'}), 404
 
-    with open('tables_data_by_age.csv', 'w') as f:
+    with open(csv_file_name, 'w') as f:
         f.write('YourTable_id,YourTable_name,YourTable_age,OtherTable_id,OtherTable_data\n')
         for your_table_row in your_table_rows:
             other_table_rows = OtherTable.query.filter_by(your_table_id=your_table_row.id).all()
@@ -71,7 +72,7 @@ def download_tables_by_age(age):
                 f.write(
                     f"{your_table_row.id},{your_table_row.name},{your_table_row.age},{other_table_row.id},{other_table_row.data}\n")
 
-    return send_file('tables_data_by_age.csv', as_attachment=True)
+    return send_file(csv_file_name, as_attachment=True)
 
 
 @app.route('/download_tables_by_age_automated/<int:age>')
@@ -80,7 +81,7 @@ def download_tables_by_age_automated(age):
     if not your_table_rows:
         return jsonify({'error': 'No data found for the given age'}), 404
 
-    with open('tables_data_by_age.csv', 'w') as f:
+    with open(csv_file_name, 'w') as f:
         # Write header
         f.write(','.join([c.name for c in YourTable.__table__.columns]))
         f.write(',')
@@ -95,7 +96,7 @@ def download_tables_by_age_automated(age):
                 other_table_data = ','.join(str(getattr(other_table_row, c.name)) for c in OtherTable.__table__.columns)
                 f.write(f"{your_table_data},{other_table_data}\n")
 
-    return send_file('tables_data_by_age.csv', as_attachment=True)
+    return send_file(csv_file_name, as_attachment=True)
 
 
 if __name__ == '__main__':

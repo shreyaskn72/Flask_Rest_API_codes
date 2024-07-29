@@ -9,10 +9,12 @@ from flask_httpauth import HTTPBasicAuth
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
+db_name = "first.db"
+
 @app.before_request
 def initdb_command():
   try:
-    with sqlite3.connect("first.db") as con:
+    with sqlite3.connect(db_name) as con:
       cur = con.cursor()
       cur.execute("CREATE TABLE IF NOT EXISTS Product (id INTEGER PRIMARY KEY, name text, description text, price INTEGER,qty INTEGER)")
       con.commit()
@@ -50,7 +52,7 @@ def add_product():
         price = request.json['price']
         qty = request.json['qty']
         try:
-            with sqlite3.connect("first.db") as con:
+            with sqlite3.connect(db_name) as con:
                 cur = con.cursor()
                 cur.execute("INSERT into Product (name, description, price, qty) values (?,?,?,?)",
                             (name, description, price, qty))
@@ -78,7 +80,7 @@ def add_product():
 @auth.login_required
 def get_product(id):
   try:
-    with sqlite3.connect("first.db") as con:
+    with sqlite3.connect(db_name) as con:
       cur = con.cursor()
       cur.execute('''SELECT * from Product where id = ?''', (id,))
       products = cur.fetchall();
@@ -121,7 +123,7 @@ def update_user():
           description = _json['description']
           price = _json['price']
           qty = _json['qty']
-          with sqlite3.connect("first.db") as con:
+          with sqlite3.connect(db_name) as con:
              sql = "UPDATE Product SET name=?, description= ?, price= ?, qty= ? WHERE id = ?"
              cur = con.cursor()
              cur.execute(sql, (name, description, price, qty, js_id))
@@ -162,7 +164,7 @@ def delete_user():
         try:
             if (_json['id'] and request.method == 'DELETE'):
                 js_id = _json['id']
-                with sqlite3.connect("first.db") as con:
+                with sqlite3.connect(db_name) as con:
                     cur = con.cursor()
                     cur.execute("delete from Product where id = ?", (js_id,))
                     con.commit()

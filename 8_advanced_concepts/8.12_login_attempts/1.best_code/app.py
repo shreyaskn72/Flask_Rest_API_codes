@@ -51,6 +51,21 @@ def register_user():
 
     return jsonify({'message': 'User registered successfully'}), 201
 
+def login_attempts_tracker(login_attempt, user):
+    # Track login attempts and lockout account if more than 5 attempts
+    if login_attempt:
+        login_attempt.attempts += 1
+        if login_attempt.attempts >= 5:
+            login_attempt.lockout_time = get_lockout_time()
+            if datetime.now() > login_attempt.lockout_time + timedelta(minutes=30):
+                user.locked = True
+    else:
+        new_login_attempt = LoginAttempt(user_id=user.id, attempts=1)
+        db.session.add(new_login_attempt)
+    db.session.commit()
+
+
+
 # API endpoint for user login
 # API endpoint for user login
 @app.route('/login', methods=['POST'])
@@ -81,17 +96,7 @@ def login_user():
             db.session.commit()
         return jsonify({'message': 'Login successful'}), 200
     else:
-        # Track login attempts and lockout account if more than 5 attempts
-        if login_attempt:
-            login_attempt.attempts += 1
-            if login_attempt.attempts >= 5:
-                login_attempt.lockout_time = get_lockout_time()
-                if datetime.now() > login_attempt.lockout_time + timedelta(minutes=30):
-                    user.locked = True
-        else:
-            new_login_attempt = LoginAttempt(user_id=user.id, attempts=1)
-            db.session.add(new_login_attempt)
-        db.session.commit()
+        login_attempts_tracker(login_attempt, user)
         return jsonify({'error': 'Incorrect password'}), 401
 
 
