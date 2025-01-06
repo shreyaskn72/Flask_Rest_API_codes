@@ -84,10 +84,11 @@ def search():
     elif book_title:
         query = query.filter(Book.title.like(f'%{book_title}%'))
     else:
-        query = query.filter(or_(
-            Author.name.like(f'%{author_name}%'),
-            Book.title.like(f'%{book_title}%')
-        ))
+        query = query
+        # query = query.filter(or_(
+        #     Author.name.like(f'%{author_name}%'),
+        #     Book.title.like(f'%{book_title}%')
+        # ))
 
     if sort_by == 'book_title':
         if sort_order == 'asc':
