@@ -253,6 +253,44 @@ def sales_count_by_category():
 
     return jsonify(result)
 
+# New route to count overall sales and sales by category (Low, Medium, High)
+@app.route('/sales_count_by_category_with_total', methods=['GET'])
+def sales_count_by_category_with_total():
+        # Define the CASE statement for categorizing sales_amount
+        sales_category = case(
+            [
+                (Sales.sales_amount < 100, 'Low'),
+                (Sales.sales_amount.between(100, 500), 'Medium'),
+                (Sales.sales_amount > 500, 'High')
+            ], else_='Unknown'
+        )
+
+        # Perform the aggregation to count overall sales and sales in each category in one query
+        sales_counts = db.session.query(
+            func.count().label('overall_sales_count'),  # Count of all sales
+            func.sum(case([(sales_category == 'Low', 1)], else_=0)).label('Low_count'),
+            func.sum(case([(sales_category == 'Medium', 1)], else_=0)).label('Medium_count'),
+            func.sum(case([(sales_category == 'High', 1)], else_=0)).label('High_count')
+        ).first()  # Use `.first()` to get the tuple of counts
+
+        # Extract values from the result tuple
+        overall_sales_count = sales_counts.overall_sales_count
+        low_count = sales_counts.Low_count
+        medium_count = sales_counts.Medium_count
+        high_count = sales_counts.High_count
+
+        # Convert the result into a structured response
+        result = {
+            "overall_sales_count": overall_sales_count,
+            "sales_by_category": {
+                "Low": low_count,
+                "Medium": medium_count,
+                "High": high_count
+            }
+        }
+
+        return jsonify(result)
+
 if __name__ == '__main__':
     app.run(debug=True)
 ```
@@ -336,3 +374,123 @@ curl http://127.0.0.1:5000/sales_count_by_category
   
 ### Conclusion:
 This API demonstrates how to use SQLAlchemy’s `case()` function with `func.count()` to perform conditional aggregation on sales data. This approach avoids using raw SQL and leverages SQLAlchemy's ORM features for clean and efficient queries.
+
+
+
+### Correcting the Query:
+We will use `.first()` instead of `.scalar()` to retrieve the row as a tuple and access each column properly. Here's the updated code:
+
+### Updated Code to Fix the Issue:
+
+```python
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import case, func
+
+app = Flask(__name__)
+
+# Configure the database URI (using SQLite for simplicity)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sales.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Initialize the SQLAlchemy object
+db = SQLAlchemy(app)
+
+# Define the Sales model
+class Sales(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sales_amount = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f"<Sales(id={self.id}, sales_amount={self.sales_amount})>"
+
+# Initialize the database (run this once to create the tables)
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
+# Route to insert sales data
+@app.route('/insert_sales', methods=['POST'])
+def insert_sales():
+    data = request.get_json()
+    sales_amount = data.get('sales_amount')
+
+    if sales_amount is None:
+        return jsonify({"message": "sales_amount is required"}), 400
+
+    new_sale = Sales(sales_amount=sales_amount)
+    db.session.add(new_sale)
+    db.session.commit()
+    return jsonify({"message": "Sale added successfully", "sale_id": new_sale.id}), 201
+
+# New route to count overall sales and sales by category (Low, Medium, High)
+@app.route('/sales_count_by_category', methods=['GET'])
+def sales_count_by_category():
+    # Define the CASE statement for categorizing sales_amount
+    sales_category = case(
+        [
+            (Sales.sales_amount < 100, 'Low'),
+            (Sales.sales_amount.between(100, 500), 'Medium'),
+            (Sales.sales_amount > 500, 'High')
+        ], else_='Unknown'
+    )
+
+    # Perform the aggregation to count overall sales and sales in each category in one query
+    sales_counts = db.session.query(
+        func.count().label('overall_sales_count'),  # Count of all sales
+        func.sum(case([(sales_category == 'Low', 1)], else_=0)).label('Low_count'),
+        func.sum(case([(sales_category == 'Medium', 1)], else_=0)).label('Medium_count'),
+        func.sum(case([(sales_category == 'High', 1)], else_=0)).label('High_count')
+    ).first()  # Use `.first()` to get the tuple of counts
+
+    # Extract values from the result tuple
+    overall_sales_count = sales_counts.overall_sales_count
+    low_count = sales_counts.Low_count
+    medium_count = sales_counts.Medium_count
+    high_count = sales_counts.High_count
+
+    # Convert the result into a structured response
+    result = {
+        "overall_sales_count": overall_sales_count,
+        "sales_by_category": {
+            "Low": low_count,
+            "Medium": medium_count,
+            "High": high_count
+        }
+    }
+
+    return jsonify(result)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+### Key Changes:
+1. **Using `.first()`**: 
+   - The `.first()` method returns the first row from the result set as a tuple (or `None` if there are no results). This allows us to access each column of the result by its label (`overall_sales_count`, `Low_count`, etc.) rather than trying to index into a scalar value.
+   - In this case, `sales_counts` will be a tuple, where `sales_counts.overall_sales_count`, `sales_counts.Low_count`, `sales_counts.Medium_count`, and `sales_counts.High_count` can be used directly.
+
+2. **Accessing Results**:
+   - Each individual count (`overall_sales_count`, `Low_count`, etc.) is now accessed from the result tuple properly by their respective labels.
+   - We then format these counts into a response JSON object.
+
+### Example Response:
+
+When you send a GET request to `/sales_count_by_category_with_total`, the response will now look like this:
+
+```json
+{
+    "overall_sales_count": 3,
+    "sales_by_category": {
+        "Low": 1,
+        "Medium": 1,
+        "High": 1
+    }
+}
+```
+
+### Summary:
+- By using `.first()`, we avoid the issue of trying to subscript an `int`. This change ensures that we retrieve the counts from the query correctly and access them in a structured way.
+- This version is more efficient because it performs both the overall sales count and the categorized sales counts in a single query, minimizing the time complexity and number of database round-trips.
+
+Let me know if you need further assistance!

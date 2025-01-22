@@ -84,5 +84,44 @@ def sales_count_by_category():
 
     return jsonify(result)
 
+
+# New route to count overall sales and sales by category (Low, Medium, High)
+@app.route('/sales_count_by_category_with_total', methods=['GET'])
+def sales_count_by_category_with_total():
+        # Define the CASE statement for categorizing sales_amount
+        sales_category = case(
+            [
+                (Sales.sales_amount < 100, 'Low'),
+                (Sales.sales_amount.between(100, 500), 'Medium'),
+                (Sales.sales_amount > 500, 'High')
+            ], else_='Unknown'
+        )
+
+        # Perform the aggregation to count overall sales and sales in each category in one query
+        sales_counts = db.session.query(
+            func.count().label('overall_sales_count'),  # Count of all sales
+            func.sum(case([(sales_category == 'Low', 1)], else_=0)).label('Low_count'),
+            func.sum(case([(sales_category == 'Medium', 1)], else_=0)).label('Medium_count'),
+            func.sum(case([(sales_category == 'High', 1)], else_=0)).label('High_count')
+        ).first()  # Use `.first()` to get the tuple of counts
+
+        # Extract values from the result tuple
+        overall_sales_count = sales_counts.overall_sales_count
+        low_count = sales_counts.Low_count
+        medium_count = sales_counts.Medium_count
+        high_count = sales_counts.High_count
+
+        # Convert the result into a structured response
+        result = {
+            "overall_sales_count": overall_sales_count,
+            "sales_by_category": {
+                "Low": low_count,
+                "Medium": medium_count,
+                "High": high_count
+            }
+        }
+
+        return jsonify(result)
+
 if __name__ == '__main__':
     app.run(debug=True)
