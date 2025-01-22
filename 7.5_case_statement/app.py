@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import case
+from sqlalchemy import case, func
 
 app = Flask(__name__)
 
@@ -58,6 +58,29 @@ def sales_summary():
 
     # Convert the result to a list of dictionaries for JSON response
     result = [{"sales_amount": sale.sales_amount, "sales_category": sale.sales_category} for sale in sales_data]
+
+    return jsonify(result)
+
+# New route to count sales by category (Low, Medium, High)
+@app.route('/sales_count_by_category', methods=['GET'])
+def sales_count_by_category():
+    # Define the CASE statement for categorization
+    sales_category = case(
+        [
+            (Sales.sales_amount < 100, 'Low'),
+            (Sales.sales_amount.between(100, 500), 'Medium'),
+            (Sales.sales_amount > 500, 'High')
+        ], else_='Unknown'
+    )
+
+    # Perform the aggregation to count sales in each category
+    sales_counts = db.session.query(
+        sales_category.label('category'),
+        func.count().label('count')
+    ).group_by(sales_category).all()
+
+    # Convert the result to a dictionary for JSON response
+    result = [{"category": row.category, "count": row.count} for row in sales_counts]
 
     return jsonify(result)
 
