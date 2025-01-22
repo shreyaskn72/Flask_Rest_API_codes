@@ -377,7 +377,7 @@ This API demonstrates how to use SQLAlchemy’s `case()` function with `func.cou
 
 
 
-### Correcting the Query:
+### query to keep track of overall count
 We will use `.first()` instead of `.scalar()` to retrieve the row as a tuple and access each column properly. Here's the updated code:
 
 ### Updated Code to Fix the Issue:
