@@ -312,3 +312,125 @@ In the response, the company `"TechCorp"` has:
 ### **Summary**:
 
 This endpoint provides both the **overall count** of users and the **count of users added this month** for each company, with a gender breakdown for each category. The **RIGHT JOIN** ensures that all companies are included, even those with no users linked to them. The query is optimized to handle both overall and this month's data efficiently.
+
+
+The SQLAlchemy query you've written can be translated into an equivalent MySQL query that performs a `RIGHT JOIN`, calculates the total user counts (overall and for the current month), and counts gender-wise users for each company. Here's how the SQL equivalent of the above query would look like:
+
+### **MySQL Equivalent Query:**
+
+```sql
+SELECT 
+    c.id AS company_id,
+    c.name AS company_name,
+    
+    -- Overall user count for each company (all-time)
+    COUNT(u.id) AS total_user_count,
+    
+    -- This month's user count for each company
+    SUM(CASE 
+        WHEN MONTH(u.created_on) = MONTH(CURDATE()) 
+        AND YEAR(u.created_on) = YEAR(CURDATE()) 
+        THEN 1 
+        ELSE 0 
+    END) AS user_count_this_month,
+    
+    -- Gender breakdown for overall users (all-time)
+    SUM(CASE 
+        WHEN u.gender = 'Male' THEN 1 
+        ELSE 0 
+    END) AS total_male_count,
+    
+    SUM(CASE 
+        WHEN u.gender = 'Female' THEN 1 
+        ELSE 0 
+    END) AS total_female_count,
+    
+    SUM(CASE 
+        WHEN u.gender = 'Other' THEN 1 
+        ELSE 0 
+    END) AS total_other_count,
+    
+    -- Gender breakdown for users added this month
+    SUM(CASE 
+        WHEN u.gender = 'Male' 
+        AND MONTH(u.created_on) = MONTH(CURDATE()) 
+        AND YEAR(u.created_on) = YEAR(CURDATE()) 
+        THEN 1 
+        ELSE 0 
+    END) AS male_count_this_month,
+    
+    SUM(CASE 
+        WHEN u.gender = 'Female' 
+        AND MONTH(u.created_on) = MONTH(CURDATE()) 
+        AND YEAR(u.created_on) = YEAR(CURDATE()) 
+        THEN 1 
+        ELSE 0 
+    END) AS female_count_this_month
+FROM 
+    company c
+RIGHT JOIN 
+    user u ON u.id = c.user_id
+GROUP BY 
+    c.id, c.name;
+```
+
+### **Explanation of SQL Query**:
+
+1. **`RIGHT JOIN`**: We are performing a `RIGHT JOIN` between the `company` table and the `user` table using the `user_id` from the `company` table and the `id` from the `user` table. This ensures that all companies, even those without associated users, are included in the result set.
+   
+   ```sql
+   RIGHT JOIN user u ON u.id = c.user_id
+   ```
+
+2. **Overall User Count (`total_user_count`)**: This is the count of all users for each company, regardless of when they were created. We use `COUNT(u.id)` to count the users associated with each company.
+
+   ```sql
+   COUNT(u.id) AS total_user_count
+   ```
+
+3. **This Month's User Count (`user_count_this_month`)**: To count users created in the current month, we use `MONTH()` and `YEAR()` functions on the `created_on` timestamp column of the `user` table. If the user was created in the current month, we return `1`, otherwise, we return `0` and sum up the results.
+
+   ```sql
+   SUM(CASE WHEN MONTH(u.created_on) = MONTH(CURDATE()) AND YEAR(u.created_on) = YEAR(CURDATE()) THEN 1 ELSE 0 END) AS user_count_this_month
+   ```
+
+4. **Gender Breakdown (Overall)**: We calculate the total number of male, female, and other users in each company by checking the `gender` column and using `CASE` to return `1` for matching rows and `0` for others, which we then sum.
+
+   ```sql
+   SUM(CASE WHEN u.gender = 'Male' THEN 1 ELSE 0 END) AS total_male_count
+   ```
+
+5. **Gender Breakdown (This Month)**: Similarly, we break down the counts of male and female users created in the current month by adding conditions for `MONTH()` and `YEAR()` on the `created_on` column in addition to checking the gender.
+
+   ```sql
+   SUM(CASE WHEN u.gender = 'Male' AND MONTH(u.created_on) = MONTH(CURDATE()) AND YEAR(u.created_on) = YEAR(CURDATE()) THEN 1 ELSE 0 END) AS male_count_this_month
+   ```
+
+6. **`GROUP BY`**: We group the results by `company.id` and `company.name` to ensure we get one row per company, which will contain the counts of users overall and for the current month, as well as gender-wise breakdowns.
+
+   ```sql
+   GROUP BY c.id, c.name;
+   ```
+
+### **Example Output:**
+
+Here is an example of what the result might look like for a given company:
+
+| company_id | company_name | total_user_count | user_count_this_month | total_male_count | total_female_count | total_other_count | male_count_this_month | female_count_this_month |
+|------------|--------------|------------------|------------------------|------------------|--------------------|-------------------|-----------------------|-------------------------|
+| 1          | ABC Corp     | 100              | 10                     | 60               | 30                 | 10                | 6                     | 4                       |
+| 2          | XYZ Ltd      | 50               | 5                      | 30               | 15                 | 5                 | 3                     | 2                       |
+
+- **`total_user_count`**: Total users in the company, regardless of the month they were added.
+- **`user_count_this_month`**: Number of users added in the current month.
+- **`total_male_count`, `total_female_count`, `total_other_count`**: The total count of users by gender in the company.
+- **`male_count_this_month`, `female_count_this_month`**: The count of male and female users added in the current month.
+
+### **Performance Consideration**:
+This query is efficient because:
+- It uses indexed fields like `user.id` and `company.id` for the `JOIN` operation.
+- The `GROUP BY` and aggregation using `SUM(CASE...)` are typically efficient for count-type operations.
+
+However, if you have a large dataset, it might be a good idea to check if you need additional indexes on fields such as `user.created_on`, `user.gender`, and `company.user_id` to optimize query performance.
+
+This MySQL query mirrors the logic of the SQLAlchemy query and should work efficiently in a MySQL database.
