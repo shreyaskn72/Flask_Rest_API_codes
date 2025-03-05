@@ -82,6 +82,59 @@ def get_users():
 
     return jsonify(result)
 
+#left join users
+@app.route('/left_join/users', methods=['GET'])
+def get_users_lef_join():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+    search = request.args.get('search', '', type=str)
+    sort_by = request.args.get('sort_by', 'id', type=str)
+    sort_order = request.args.get('sort_order', 'asc', type=str)
+    role_filter = request.args.get('role', '', type=str)
+
+    # Using LEFT JOIN to include users without roles
+    query = db.session.query(User).join(UserRole, UserRole.user_id == User.id, isouter=True).join(Role, Role.id == UserRole.role_id, isouter=True)
+
+    if search:
+        query = query.filter(
+            (User.username.like(f'%{search}%')) |
+            (User.email.like(f'%{search}%'))
+        )
+
+    if role_filter:
+        roles = role_filter.split(',')
+        role_filters = [Role.name.like(f'%{role.strip()}%') for role in roles]
+        query = query.filter(or_(*role_filters))
+
+    if sort_by == 'username':
+        sort_column = User.username
+    elif sort_by == 'email':
+        sort_column = User.email
+    else:
+        sort_column = User.id
+
+    if sort_order == 'desc':
+        query = query.order_by(sort_column.desc())
+    else:
+        query = query.order_by(sort_column.asc())
+
+    users = query.paginate(page, per_page, False)
+
+    result = {
+        'total': users.total,
+        'pages': users.pages,
+        'current_page': users.page,
+        'per_page': users.per_page,
+        'users': [{
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'roles': [{'id': role.id, 'name': role.name} for role in user.roles] if user.roles else []
+        } for user in users.items]
+    }
+
+    return jsonify(result)
+
 # API endpoint to add a new user
 @app.route('/users', methods=['POST'])
 def add_user():
