@@ -4,6 +4,8 @@ from sqlalchemy import or_, and_, desc
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///example.db'  # SQLite database
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:mypassword@localhost:port/your_database_name' #postgressql
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@hostname:port/your_database_name' #mysql db
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
