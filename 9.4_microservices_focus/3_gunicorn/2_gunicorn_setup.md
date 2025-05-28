@@ -35,14 +35,14 @@ gunicorn==21.2.0
 Use the following command:
 
 ```bash
-gunicorn app:app --bind 0.0.0.0:8000 --workers 2
+gunicorn crud:app --bind 0.0.0.0:8000 --workers 2
 ```
 
 ### Breakdown:
 
-* `app:app` → `filename:FlaskAppObject`
+* `crud:app` → `filename:FlaskAppObject`
 
-  * First `app` is the file name: `app.py`
+  * First `crud` is the file name: `crud.py`
   * Second `app` is the Flask instance inside it (`app = Flask(__name__)`)
 * `--bind 0.0.0.0:8000` → Listen on port 8000 (or any other)
 * `--workers 2` → Use 2 worker processes (adjust based on CPU)
